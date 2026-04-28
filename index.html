@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Secure Payment</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", "Segoe UI", sans-serif;
+}
+
+body {
+  height: 100vh;
+  overflow: hidden;
+  background: radial-gradient(circle at top, #0b1220, #020617);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Ambient glow */
+.light {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  filter: blur(130px);
+  opacity: 0.6;
+  animation: float 14s infinite ease-in-out;
+}
+
+.light:nth-child(1) {
+  background: radial-gradient(circle, rgba(0,255,200,0.25), transparent);
+  top: 10%;
+  left: 10%;
+}
+
+.light:nth-child(2) {
+  background: radial-gradient(circle, rgba(124,58,237,0.25), transparent);
+  top: 60%;
+  left: 70%;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-50px); }
+}
+
+/* Card */
+.container {
+  position: relative;
+  z-index: 2;
+  width: 92%;
+  max-width: 400px;
+  padding: 28px;
+  border-radius: 24px;
+  backdrop-filter: blur(30px);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 25px 80px rgba(0,0,0,0.75);
+}
+
+/* premium glow border */
+.container::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: 24px;
+  background: linear-gradient(120deg, #00f5ff, #7c3aed, #00ffae);
+  filter: blur(20px);
+  opacity: 0.25;
+  z-index: -1;
+}
+
+h1 {
+  font-size: 26px;
+  letter-spacing: 0.3px;
+}
+
+.sub {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-bottom: 18px;
+}
+
+.amount {
+  font-size: 44px;
+  font-weight: 700;
+  color: #00ffae;
+  margin: 18px 0;
+  text-shadow: 0 0 25px rgba(0,255,174,0.5);
+}
+
+/* Buttons */
+.btn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 14px;
+  margin: 10px 0;
+  border-radius: 14px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.25s ease;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.btn:hover {
+  transform: translateY(-3px) scale(1.02);
+}
+
+/* shimmer */
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.25), transparent);
+  transform: translateX(-100%);
+  transition: 0.5s;
+}
+
+.btn:hover::after {
+  transform: translateX(100%);
+}
+
+/* App colors */
+.upi { background: linear-gradient(135deg,#00c6ff,#0072ff); }
+.gpay { background: #111; }
+.phonepe { background: #5f259f; }
+.paytm { background: #00baf2; }
+.fampay { background: linear-gradient(135deg,#ff4ecd,#7c3aed); }
+
+/* QR */
+.qr img {
+  width: 150px;
+  margin-top: 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255,255,255,0.15);
+}
+
+.note {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 10px;
+}
+
+.secure {
+  margin-top: 10px;
+  color: #00ffae;
+  font-size: 13px;
+}
+
+/* Overlay */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.3s;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.loader {
+  width: 60px;
+  height: 60px;
+  border: 4px solid rgba(255,255,255,0.1);
+  border-top: 4px solid #00ffae;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.processing-text {
+  color: #fff;
+  margin-top: 12px;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="light"></div>
+<div class="light"></div>
+
+<div class="container">
+  <h1>Secure Payment</h1>
+  <div class="sub">UPI • Instant • Encrypted</div>
+
+  <div class="amount">₹9</div>
+
+  <a class="btn upi" onclick="pay('upi://pay?pa=8469626550@fam&pn=Payment&am=9&cu=INR')">💠 Pay via UPI</a>
+
+  <a class="btn gpay" onclick="pay('gpay://upi/pay?pa=8469626550@fam&pn=Payment&am=9&cu=INR')">🟢 Google Pay</a>
+
+  <a class="btn phonepe" onclick="pay('phonepe://pay?pa=8469626550@fam&pn=Payment&am=9&cu=INR')">🟣 PhonePe</a>
+
+  <a class="btn paytm" onclick="pay('paytmmp://pay?pa=8469626550@fam&pn=Payment&am=9&cu=INR')">🔵 Paytm</a>
+
+  <a class="btn fampay" onclick="pay('fampay://pay?pa=8469626550@fam&pn=Payment&am=9&cu=INR')">💗 FamPay</a>
+
+  <div class="note">Use any UPI app or scan QR below</div>
+
+  <div class="qr">
+    <img src="qr.png" alt="QR Code">
+  </div>
+
+  <div class="secure">🔒 Bank-grade Secure Payment</div>
+</div>
+
+<!-- Overlay -->
+<div class="overlay" id="overlay">
+  <div style="text-align:center">
+    <div class="loader"></div>
+    <div class="processing-text">Redirecting securely...</div>
+  </div>
+</div>
+
+<script>
+function pay(link){
+  const overlay = document.getElementById("overlay");
+  overlay.classList.add("active");
+
+  setTimeout(() => {
+    window.location.href = link;
+  }, 900);
+}
+</script>
+
+</body>
+</html>
